@@ -1,7 +1,17 @@
 # [level 1] 폰켓몬 - 1845 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/1845) 
+## 목차
+[1. 문제](#1.-문제)
 
+[2. 오늘의 개념정리](#2.-오늘의-개념정리)
+
+[3. 더 좋은 풀이](#3.-더-좋은-풀이)
+
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/1845) 
 ### 성능 요약
 
 메모리: 36.5 MB, 시간: 2.09 ms
@@ -82,3 +92,60 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+----
+
+### 2. 오늘의 개념정리
+#### Map
+- key - value 형식의 자료구조
+- key 삽입 순서를 기억함
+- key 에는 중복 값이 들어갈 수 없지만 value에는 중복 값이 들어갈 수 있다.
+- 뛰어난 검색 속도를 가지고 있다
+- 인덱스가 따로 X → **`iterator`** 사용해야함
+- 주요 메서드
+
+```jsx
+// key를 이용해 value를 저장
+map.set(key, value)
+// key에 해당하는 값 반환, key가 존재X -> undefined 반환
+map.get(key)
+// key 가 존재하면 true, 아니면 false
+map.has(key)
+// key에 해당하는 값 삭제
+map.delete(key)
+// map 안의 모든 요소 제거
+map.clear()
+// 요소 개수 반환
+map.size
+
+// 각 요소의 키 iterator 객체 반환
+map.keys()
+// 각 요소의 값 iterator 객체 반환
+map.values()
+// 요소의 key, value 쌍으로 하는 iterable 객체 반환
+map.entries()
+```
+
+#### Set
+- 중복 존재 X
+- 모든 값들은 고유하며 새로운 값을 추가하거나 변경하면 값 비교가 이루어짐
+- 인덱스 사요 X
+- 삽입 순서대로 요소 순회
+- `NaN` 과 `undefined` 도 set에 저장할 수 있다
+- 인덱스가 따로 X → **`iterator`** 사용해야함  
+
+---
+### 3. 더 좋은 풀이
+```jsx
+function solution(nums) {
+    const max = nums.length / 2;
+    const arr = [...new Set(nums)];
+    
+    return arr.length > max ? max : arr.length;
+}
+```
+⇒ 종류의 개수가 필요하기 때문에 중복이 존재할 수 없는 set을  사용
+
