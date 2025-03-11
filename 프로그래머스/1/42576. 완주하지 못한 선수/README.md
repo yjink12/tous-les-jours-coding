@@ -1,5 +1,9 @@
 # [level 1] 완주하지 못한 선수 - 42576 
 
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42576) 
 
 ### 성능 요약
@@ -75,3 +79,38 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 오늘의 개념정리
+#### Map에 대한 반복
+```jsx
+for (const name of participantMap.keys()) {}
+for (const name of participantMap.values()) {}
+for (const [name, count] of participantMap) {} // participantMap은 participant.entries()와 동일함
+```
+
+### 3. 더 좋은 풀이 (Claude의 리팩토링)
+```jsx
+function solution(participant, completion) {
+  const participantMap = new Map();
+  
+  // 참가자 이름을 키로, 등장 횟수를 값으로 저장
+  for (const name of participant) {
+    participantMap.set(name, (participantMap.get(name) || 0) + 1);  // 조건문 간소화
+  }
+  
+  // 완주자 이름을 키로, 해당 이름의 카운트를 감소
+  for (const name of completion) {
+    participantMap.set(name, participantMap.get(name) - 1);
+  }
+  
+  // 값이 0이 아닌 키(이름)를 찾음
+  for (const [name, count] of participantMap) {
+    if (count > 0) {
+      return name;
+    }
+  }
+}
+```
