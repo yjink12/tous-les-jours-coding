@@ -1,5 +1,8 @@
 # [level 1] K번째수 - 42748 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42748) 
 
 ### 성능 요약
@@ -64,3 +67,87 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 오답
+```jsx
+function solution(array, commands) {
+    var answer = [];
+    for (let i=0; i<commands.length; i++) {
+      const start = commands[i][0]-1
+      const end = commands[i][1];
+      const index = commands[i][2]-1
+
+      const sliceArr = array.slice(start, end);
+      const sortArr = sliceArr.sort();
+
+      answer.push(sortArr[index]);
+    }
+    return answer;
+}
+```
+
+**문제점**
+
+1. **`sort()`** 
+    1. 사전순(문자열 기준) 으로 정렬
+    2. 숫자 배열을 정렬하면 정렬이 정확하지 않다
+        
+        ⇒ 해결책) 숫자 오름차순 정렬을 위해서 비교 필요
+        
+        1. 첫 번째 인자가 두 번째 인자보다 작다 ⇒ 음수
+        2. 첫 번째 인자가 두 번째 인자보다 크다 ⇒ 양수
+        3. 첫 번째 인자가 두 번째 인자와 같다 ⇒ 0
+        
+        ⇒ 오름차순 :  a - b  / 내림차순 : b - a
+        
+    3. 원본 배열 변경 위험
+        
+        ⇒ sort( ) 는 원본 배열을 직접 변경
+        
+        원본 배열을 유지해야 하는 경우 배열을 복제한 후에 사본으로 정렬
+        
+        참고) **`toSorted()`  :** 사용할 경우 바로 정렬된 배열 사본 얻을 수 있음
+        
+2. **`구조 분해 할당`** 사용 가능
+    
+    ```jsx
+    const start = commands[i][0]-1
+    const end = commands[i][1];
+    const index = commands[i][2]-1
+    
+    =>>>>>
+    const [start, end, index] = commands[i];
+    ```
+
+### 3. 더 좋은 풀이
+#### Claude 제안 (내 풀이 리팩토링)
+
+```jsx
+function solution(array, commands) {
+    let answer = [];
+    
+    for (let i = 0; i < commands.length; i++) {
+        const [start, end, index] = commands[i];
+
+        const sortedArr = array.slice(start - 1, end).sort((a, b) => a - b);
+        answer.push(sortedArr[index - 1]);
+    }
+
+    return answer;
+}
+```
+
+#### 다른 풀이 
+```jsx
+function solution(array, commands) {
+    return commands.map(([sPosition, ePosition, position]) => {
+        return array
+            .slice(sPosition - 1, ePosition)  // slice() 사용으로 최적화
+            .sort((a, b) => a - b)[position - 1]; // 정렬 후 원하는 위치 반환
+    });
+}
+
+```
