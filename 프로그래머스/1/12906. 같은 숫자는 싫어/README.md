@@ -1,5 +1,9 @@
 # [level 1] 같은 숫자는 싫어 - 12906 
 
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/12906) 
 
 ### 성능 요약
@@ -62,3 +66,44 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 더 좋은 풀이
+#### Claude Refactoring
+```jsx
+function solution(arr) {
+    const answer = [arr[0]]; // 첫 번째 요소는 항상 포함
+    
+    for (let i = 1; i < arr.length; i++) {
+        if (arr[i] !== arr[i-1]) { // 이전 요소와 비교
+            answer.push(arr[i]);
+        }
+    }
+    return answer;
+}
+```
+=> 배열 인덱스 직접 비교
+
+#### 다른 풀이
+```jsx
+function solution(arr)
+{
+    return arr.filter((val,index) => val != arr[index+1]);
+}
+```
+
+- arr[index+1]
+    
+    ⇒ 마지막 요소에서는 undefined
+    
+    보완한다면,
+    
+    ```jsx
+    function solution(arr) {   
+        // 첫번째 요소는 항상 포함
+        // 현재 요소가 이전 요소와 다른 경우에만 포함
+        return arr.filter((val, index) => index === 0 || val !== arr[index-1]);
+    }
+    ```
