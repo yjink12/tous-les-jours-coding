@@ -1,5 +1,8 @@
 # [level 1] 최소직사각형 - 86491 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/86491) 
 
 ### 성능 요약
@@ -109,3 +112,60 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 문제점
+```jsx
+function solution(sizes) {
+    var answer = 0;
+    let bigSize = [];
+    let smallSize = [];
+
+    for(let i=0; i<sizes.length; i++) {
+       if (sizes[i][0] > sizes[i][1]) {
+        bigSize.push(sizes[i][0]);
+        smallSize.push(sizes[i][1]);
+       } else {
+        bigSize.push(sizes[i][1]);
+        smallSize.push(sizes[i][0]);
+       }
+    }
+
+    bigSize.sort((a, b) => a - b);
+    smallSize.sort((a, b) => a - b);
+
+    answer = bigSize[bigSize.length - 1] * smallSize[smallSize.length - 1];
+    return answer;
+}
+```
+
+**문제점**
+
+⇒ 가로, 세로 값 중 큰 값과 작은 값을 배열에 넣고 다시 또 정렬을 할 필요 없음
+
+⇒ 큰 값의 최대값, 작은 값의 최대값을 구하면 된다!
+
+
+### 3. 다른 풀이
+
+```jsx
+function solution(sizes) {
+    let w = 0;
+    let h = 0;
+    
+    sizes.forEach(s => {
+        // 각 카드의 작은 쪽을 h, 큰 쪽을 w와 비교
+        const min = Math.min(s[0], s[1]);
+        const max = Math.max(s[0], s[1]);
+        
+        h = Math.max(h, min);
+        w = Math.max(w, max);
+    });
+
+    return w * h;
+}
+```
+
+⇒ sort를 하지 않고 `Math.min` 과 `Math.max` 를 사용하는 방법이 있다
