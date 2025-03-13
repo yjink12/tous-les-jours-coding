@@ -1,5 +1,8 @@
 # [level 1] 모의고사 - 42840 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42840) 
 
 ### 성능 요약
@@ -73,3 +76,77 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 내 풀이
+```jsx
+function solution(answers) {
+    var answer = [];
+    
+    // 수포자들의 규칙
+    const fMath = [1, 2, 3, 4, 5];
+    const sMath = [2, 1, 2, 3, 2, 4, 2, 5];
+    const tMath = [3, 3, 1, 1, 2, 2, 4, 4, 5, 5];
+
+    let [fScore, sScore, tScore] = [0, 0, 0];
+    
+    for (let i=0; i<answers.length; i++) {
+        if (answers[i] === fMath[i%fMath.length]) fScore++;
+        if (answers[i] === sMath[i%sMath.length]) sScore++;
+        if (answers[i] === tMath[i%tMath.length]) tScore++;
+    }
+    
+    const maxScore = Math.max(fScore, sScore, tScore);
+
+    if (fScore === maxScore) answer.push(1);
+    if (sScore === maxScore) answer.push(2);
+    if (tScore === maxScore) answer.push(3);
+  
+    return answer;
+}
+```
+=> 문제 번호를 각 수포자들의 규칙 배열의 길이로 나눈 나머지로 문제에 대한 수포자의 답을 찾을 수 있다
+
+### 3 다른 풀이
+#### Claude Refactoring
+
+```jsx
+function solution(answers) {
+    const patterns = [
+        [1, 2, 3, 4, 5],
+        [2, 1, 2, 3, 2, 4, 2, 5],
+        [3, 3, 1, 1, 2, 2, 4, 4, 5, 5]
+    ];
+    
+    // 각 학생의 점수 배열
+    const scores = [0, 0, 0];
+    
+    // 점수 계산
+    for (let i = 0; i < answers.length; i++) {
+        for (let j = 0; j < patterns.length; j++) {
+            if (answers[i] === patterns[j][i % patterns[j].length]) {
+                scores[j]++;
+            }
+        }
+    }
+    
+    // 최고 점수 계산
+    const maxScore = Math.max(...scores);
+    
+    // 결과 배열 구성
+    const result = [];
+    for (let i = 0; i < scores.length; i++) {
+        if (scores[i] === maxScore) {
+            result.push(i + 1);
+        }
+    }
+    
+    return result;
+}
+```
+
+1. `patterns` / `scores` 배열 생성
+2. 점수 계산시 반복되는 if 문을 이중 for 문으로 변경
+3. 최고 점수를 가진 수포자의 번호를 result 배열에 추가시 반복되는 if문을 for 문으로 변경
