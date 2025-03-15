@@ -10,10 +10,7 @@ function solution(n, lost, reserve) {
     for (let student of sortLost) {
         const canShare = sortReserve.filter((re) => re == student-1 || re == student+1);
         
-        if (2 == canShare.length) {
-            sortLost = sortLost.filter((lt) => lt !== student);
-            sortReserve = sortReserve.filter((re) => re !== canShare.sort((a, b) => a - b)[0]);
-        } else if (1 == canShare.length) {
+        if (1 <= canShare.length) {
             sortLost = sortLost.filter((lt) => lt !== student);
             sortReserve = sortReserve.filter((re) => re !== canShare[0]);
         }
