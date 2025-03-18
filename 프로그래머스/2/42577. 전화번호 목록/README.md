@@ -1,5 +1,8 @@
 # [level 2] 전화번호 목록 - 42577 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42577) 
 
 ### 성능 요약
@@ -82,3 +85,75 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+</div>
+</details>
+
+---
+### 2. 오답
+```jsx
+function solution(phone_book) {
+    var answer = true;
+    
+    const sortedPhoneBook = phone_book.sort((a, b) => a - b);
+
+    for (let i = 0; i < sortedPhoneBook.length; i++) {
+      for (let j = i + 1; j < sortedPhoneBook.length; j++) {
+        let result = sortedPhoneBook[j].startsWith(sortedPhoneBook[i]);
+        if (result) {
+            answer = false;
+            break;
+        };
+      }
+    }
+    
+    return answer;
+}
+```
+
+⇒ 효율성 테스트 실패 - 시간 초과 발생
+
+**원인 1)** 이중 반복문 사용 ⇒ 최악의 경우 **시간 복잡도 O(n^2)**
+
+**해결**
+
+**sort ( )** 
+
+- **시간 복잡도 O(nlogn)**
+- 문자열 정렬
+
+**startsWith( )**
+
+- 문자열이 지정된 접두사로 시작하는지 여부 확인
+- return true / false
+- 사용
+    
+    **`string.startsWith(searchString[ , position ])`**
+    
+    - 대소문자 구분
+    - position 매개변수로 특정 인덱스부터 검색 시작 가능
+---
+### 3. 다른 풀이
+#### Claude Refactoring
+```jsx
+function solution(phone_book) {
+    // 문자열 기준으로 정렬
+    phone_book.sort();
+    
+    // 인접한 두 번호만 비교하면 됨
+    for (let i = 0; i < phone_book.length - 1; i++) {
+        if (phone_book[i+1].startsWith(phone_book[i])) {
+            return false;
+        }
+    }
+    
+    return true;
+}
+```
+
+1. 전화번호가 정렬되어 있으면, 접두어 관계는 인접한 항목에서만 발생 가능
+    
+    ```jsx
+    ["119", "97674223", "1195524421"]
+    sort()
+     => ["119", "1195524421", "97674223"]
+    ```
