@@ -1,5 +1,8 @@
 # [level 2] 의상 - 42578 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42578) 
 
 ### 성능 요약
@@ -106,3 +109,52 @@ face에 해당하는 의상이 crow_mask, blue_sunglasses, smoky_makeup이므로
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+---
+### 2. 풀이과정
+```jsx
+function solution(clothes) {
+    let answer = 1;
+    
+    // clothes 종류별 정리
+    let closet = new Map();
+    clothes.forEach((cloth) => {
+         if (closet.get(cloth[1])) closet.set(cloth[1], closet.get(cloth[1]) + 1);
+        else closet.set(cloth[1], 1);
+    });
+    
+    for ([key, value] of closet) {
+        answer *= (1 + value);
+    }
+
+    return answer - 1;
+}
+```
+
+⇒ clothes 를 map 으로 종류별로 나누고
+
+```jsx
+[["yellow_hat", "headgear"], ["blue_sunglasses", "eyewear"], ["green_turban", "headgear"]]
+ => { headgear: 2, eyewear : 1 }
+```
+
+이 구조를 가지고 (head size + eye size) + (head size * eye size) 라는 규칙은 발견했지만
+옷 종류가 3가지로 늘어났을 때의 규칙을 발견하지 못했다.
+
+```jsx
+[["yellow_hat", "headgear"], ["blue_sunglasses", "eyewear"], ["smoky_makeup", "face"], ]
+ => { headgear: 1, eyewear : 1, face : 1 }
+```
+
+(head size + eye size + face size) + (head*eye + head*face + eye*face) + (head*eye*face)
+
+⇒ 결국 옷 종류를 a, b, c 라고 할 때
+
+(a+b+c) + (ab + bc + ca) + (abc) 인데
+
+이걸 수학적으로 보면 **`(x+a)(x+b)(x+c)`**
+
+$x^3$+ (a+b+c) $x^2$ + (ab + bc + ca) $x$ + (abc) 라고 한다…아쉽다
