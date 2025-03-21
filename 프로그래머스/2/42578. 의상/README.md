@@ -158,3 +158,5 @@ function solution(clothes) {
 이걸 수학적으로 보면 **`(x+a)(x+b)(x+c)`**
 
 $x^3$+ (a+b+c) $x^2$ + (ab + bc + ca) $x$ + (abc) 라고 한다…아쉽다
+
+그리고 x에 대입한 1은 빼줘야한다!
