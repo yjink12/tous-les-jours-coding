@@ -1,5 +1,8 @@
 # [level 2] 기능개발 - 42586 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42586) 
 
 ### 성능 요약
@@ -73,3 +76,102 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+</div>
+</details>
+
+---
+
+### 2. 내 문제풀이
+```jsx
+function solution(progresses, speeds) {
+    // progresses 남은 진도 계산해서 speeds로 나누기(올림 필수)
+    let leftDay = [];
+    for (let i = 0; i < progresses.length; i++) {
+      let duration = Math.ceil((100 - progresses[i]) / speeds[i]);
+      leftDay.push(duration);
+    }
+
+    let deploySchedule = [];
+    // 배포마다 몇 개 기능 배포
+    let count = 1;
+    let maxLeftDay = leftDay[0];
+
+    for (let i = 1; i < leftDay.length; i++) {
+      if (leftDay[i] > maxLeftDay) {
+        deploySchedule.push(count);
+        maxLeftDay = leftDay[i];
+        count = 1;
+      } else {
+        count++;
+      }
+    }
+    deploySchedule.push(count);
+
+    return deploySchedule;
+}
+```
+
+1. progresses 를 순회해서 남은 작업 진도 값 추출한다
+2. 남은 작업 진도 값을 개발 속도로 나눈다
+3. 그리고 그 값을 올림(ceil) 한다
+4. `leftDay` 배열에  남은 작업일 push
+5. 어차피 `leftDay` 배열의 첫 번째 요소는 첫번째 요소이기 때문에 maxLeftDay로 바로 할당한다
+6. 배포마다 몇 개 기능을 배포하는지 확인하기 위해 `leftDay` 를 순회해서
+    1. leftDay의 값이 이전 leftDay 의 값보다 크면
+        
+        이전 count 값을 deploySchedule에 push 한다
+        
+        그리고 maxLeftDay를 현재 leftDay 값으로 변경하고 count를 1로 초기화한다.
+        
+    2. leftDay의 값이 이전 leftDay 의 값보다 작으면
+        
+        이전 leftDay 에 포함되는 것이기 때문에 count 값을 증가시킨다
+        
+7. 마지막 배포 그룹을 추가 시켜준다
+
+---
+
+### 3. 다른 풀이
+```jsx
+function solution(progresses, speeds) {
+    let answer = [0];
+    let days = progresses.map((progress, index) => Math.ceil((100 - progress) / speeds[index]));
+    let maxDay = days[0];
+
+		// i = 작업, j = 배포 그룹
+    for(let i = 0, j = 0; i< days.length; i++){
+        if(days[i] <= maxDay) {
+            answer[j] += 1;
+        } else {
+            maxDay = days[i];
+            answer[++j] = 1;
+        }
+    }
+
+    return answer;
+}
+```
+
+1. `map` 을 사용해서 남은 작업일을 계산한다
+2. 두 개의  변수 i 와 j 를 사용한다
+    
+    
+    i=0
+    
+    days[0] = 7 ≤ maxDay(7)
+    
+    answer[0] += 1 → answer=[1]
+    
+    i=1
+    
+    days[1] = 3 ≤ maxDay(7)
+    
+    answer[0] += 1 → answer=[2]
+    
+    i=2
+    
+    days[2] = 9 > maxDay(7)
+    
+    maxDay = 9
+    
+    answer[1] += 1 → answer=[2, 1]
