@@ -1,5 +1,8 @@
 # [level 2] 더 맵게 - 42626 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42626) 
 
 ### 성능 요약
@@ -70,3 +73,167 @@ Leo가 가진 음식의 스코빌 지수를 담은 배열 scoville과 원하는 
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+---
+
+### 2. 오답
+```jsx
+function solution(scoville, K) {
+    // 오름차순으로 정렬
+    let sortedScoville = scoville.sort((a, b) => a - b);
+
+    // 배열 값이 k 이상인지 분기
+    let mixCount = 0;
+    for (let i = 0; i < sortedScoville.length; i++) {
+      if (sortedScoville[i] < K) {
+        // mix logic
+        let mixScoville = sortedScoville[0] + sortedScoville[1] * 2;
+        // 배열에서 제외하고 mix 값을 추가
+        sortedScoville.splice(0, 2, mixScoville);
+        // 그리고 다시 오름차순으로 정렬
+        sortedScoville.sort((a, b) => a - b);
+      } else {
+        mixCount = i;
+        break;
+      }
+    }
+
+    return mixCount;
+  }
+```
+
+⇒ **문제점**
+
+`sort()` 반복적으로 호출 ⇒ O(nlogn) 의 시간 복잡도 발생
+
+⇒ Heap 으로 풀어야하지만 javascript 에는 없다 ⇒ 직접 구현해야한다...맵다 매워...
+
+
+---
+
+### 3. 다른 풀이
+#### Claude Refactoring
+```jsx
+class MinHeap {
+    constructor() {
+        this.heap = [];
+    }
+
+    push(value) {
+		    // 배열 끝에 새 값 추가
+		    this.heap.push(value);
+		    
+		    // 새로 추가된 노드의 위치 조정 (bubbleUp)
+		    this.bubbleUp(this.heap.length - 1);
+		}
+
+    pop() {
+		  // 힙이 비어있으면 null 반환
+		  if (this.heap.length === 0) return null;
+		  
+		  // 힙에 요소가 1개면 그 요소 반환
+		  if (this.heap.length === 1) return this.heap.pop();
+		
+		  // 최소값(루트) 저장
+		  const min = this.heap[0];
+		  
+		  // 마지막 요소를 루트로 이동
+		  this.heap[0] = this.heap.pop();
+		  
+		  // 루트 노드 위치 조정 (bubbleDown)
+		  this.bubbleDown(0);
+		  
+		  return min;
+		}
+
+    bubbleUp(index) {
+	    while (index > 0) {
+	        // 부모 노드 인덱스 계산
+	        const parentIndex = Math.floor((index - 1) / 2);
+	        
+	        // 부모 노드가 현재 노드보다 작거나 같으면 정지
+	        if (this.heap[parentIndex] <= this.heap[index]) break;
+	        
+	        // 부모와 자식 노드 값 교환
+	        [this.heap[parentIndex], this.heap[index]] = 
+	        [this.heap[index], this.heap[parentIndex]];
+	        
+	        // 인덱스를 부모 노드 인덱스로 변경
+	        index = parentIndex;
+	    }
+		}
+
+    bubbleDown(index) {
+		    const lastIndex = this.heap.length - 1;
+		    
+		    while (true) {
+		        // 왼쪽, 오른쪽 자식 노드 인덱스 계산
+		        const leftIndex = 2 * index + 1;
+		        const rightIndex = 2 * index + 2;
+		        let smallestIndex = index;
+		
+		        // 왼쪽 자식이 현재 노드보다 작으면 왼쪽 자식을 최소로 설정
+		        if (leftIndex <= lastIndex && 
+		            this.heap[leftIndex] < this.heap[smallestIndex]) {
+		            smallestIndex = leftIndex;
+		        }
+		
+		        // 오른쪽 자식이 현재 최소 노드보다 작으면 오른쪽 자식을 최소로 설정
+		        if (rightIndex <= lastIndex && 
+		            this.heap[rightIndex] < this.heap[smallestIndex]) {
+		            smallestIndex = rightIndex;
+		        }
+		
+		        // 더 이상 바꿀 노드가 없으면 정지
+		        if (smallestIndex === index) break;
+		
+		        // 현재 노드와 최소 노드 교환
+		        [this.heap[index], this.heap[smallestIndex]] = 
+		        [this.heap[smallestIndex], this.heap[index]];
+		        
+		        // 인덱스를 최소 노드 인덱스로 변경
+		        index = smallestIndex;
+		    }
+		}
+
+    peek() {
+        return this.heap[0];
+    }
+
+    size() {
+        return this.heap.length;
+    }
+}
+
+function solution(scoville, K) {
+    const minHeap = new MinHeap();
+    
+    // 모든 스코빌 지수를 힙에 추가
+    for (const score of scoville) {
+        minHeap.push(score);
+    }
+
+    let mixCount = 0;
+
+    // 가장 낮은 스코빌 지수가 K 미만일 때 믹싱 수행
+    while (minHeap.size() > 1 && minHeap.peek() < K) {
+        const first = minHeap.pop();
+        const second = minHeap.pop();
+        
+        const mixedScoville = first + second * 2;
+        minHeap.push(mixedScoville);
+        
+        mixCount++;
+    }
+
+    // 모든 음식의 스코빌 지수를 K 이상으로 만들 수 없는 경우
+    return minHeap.peek() >= K ? mixCount : -1;
+}
+```
+
+⇒ `bubbleUp` : 새로 추가된 노드를 올바른 위치로 위로 올림
+
+`bubbleDown` : 루트에서 제거된 마지막 노드를 올바른 위치로 아래로 내림
