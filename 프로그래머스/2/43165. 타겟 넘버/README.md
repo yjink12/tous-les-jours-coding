@@ -1,5 +1,8 @@
 # [level 2] 타겟 넘버 - 43165 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/43165) 
 
 ### 성능 요약
@@ -73,3 +76,57 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+---
+
+### 2. 오답
+- 고민해봤는데 모르겠어서 블로그 검색해봤더니 DFS 를 사용해서 풀어야 한다고 한다
+- Javascript 에서는 DFS 를 **`재귀함수`** 를 이용해서 구현 가능
+    - 각각 노드의 자식 노드를 탐색하는 함수를 스택에 추가
+    - 더 이상 자식 노드가 없을 때 마지막에 추가된 자식 노드 먼저 실행 한 후 스택에서 제거
+- **문제 분석**
+    - 트리의 왼쪽은 `+` 더하기 / 오른쪽은 `-` 빼기
+    - 트리 내에서 부분합을 만든다
+      
+```jsx
+function solution(numbers, target) {
+    let answer = 0;
+    
+    const dfs = (idx, sum) => {
+        if (idx === numbers.length) {
+            if (sum === target) answer++;
+            return;
+        }
+        
+        dfs(idx + 1, sum + numbers[idx]);
+        dfs(idx + 1, sum - numbers[idx]);
+    };
+    
+    dfs(0, 0);
+    
+    return answer;
+}
+```
+- 루트 노드는 배열의 맨 처음 요소
+- 인덱스가 배열의 길이와 동일하다
+    
+    ⇒ 배열의 맨 마지막 요소까지 모두 순회했다
+    
+- `sum` 합이 타겟과 동일하다면 방법의 수 올리기
+    
+    동일하지 않으면 함수 탈출!
+    
+- `+` 자식 노트 탐색 → `-` 자식 노드 탐색
+
+<img src="https://github.com/user-attachments/assets/be30ed71-d6b0-406f-91f8-ccdb302b081f" width="70%">
+
+
+---
+
+### 3. 오늘의 개념정리
+<img src="https://github.com/user-attachments/assets/c4d2e2d3-e0ed-4da7-b2dc-e94be523898a" width="70%">
+
+어렵다!
