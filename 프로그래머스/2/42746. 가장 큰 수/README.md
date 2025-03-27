@@ -119,6 +119,9 @@ function solution(numbers) {
 4. a 와 b 값이 동일할 경우 남은 문자를 조합해서 어떤 수가 더 큰지 비교
 5. 예외처리) [0, 0, 0] 의 경우 0을 반환할 수 있도록 해야함
 
+   <img src="https://github.com/user-attachments/assets/e64893b8-e446-4ebf-aca7-2f67f8903826" width="30%">
+
+
 ---
 
 ### 3. 다른 풀이
