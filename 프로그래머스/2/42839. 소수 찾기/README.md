@@ -1,5 +1,8 @@
 # [level 2] 소수 찾기 - 42839 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42839) 
 
 ### 성능 요약
@@ -63,3 +66,76 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+---
+### 2. 오늘의 개념정리
+```jsx
+function solution(numbers) {
+    // 중복 제거를 위해 set 사용
+    let answer = new Set();
+
+    // 소수 판별
+    const isPrime = (num) => {
+      if (num <= 1) return false;
+      for (let i = 2; i < num; i++) {
+        if (num % i === 0) return false;
+      }
+      return true;
+    };
+
+    // arr : 선택되지 않은 수들
+    // fixed : 선택된 수들
+    const getCombined = (arr, fixed) => {
+      if (arr.length >= 1) {  // 선택할 수가 남아있다면
+        for (let i = 0; i < arr.length; i++) {
+          const newFixed = fixed + arr[i];  // 현재 숫자를 선택해 조합에 추가
+          const copyArr = [...arr];  // 배열 복사
+          copyArr.splice(i, 1);   // 선택한 숫자 제거
+
+          if (isPrime(parseInt(newFixed))) {  // 현재까지의 조합이 소수인지 확인
+            answer.add(parseInt(newFixed));   // 소수이면 결과 Set에 추가
+          }
+          getCombined(copyArr, newFixed);   // 재귀호출!
+        }
+      }
+    };
+
+    getCombined(numbers, '');
+    return answer.size;
+  }
+```
+
+어렵다…
+
+다른 사람 문제 풀이 참고했다…또륵
+
+### 소수
+
+1. 1 이하는 소수 X
+2. 2부터 num -1 까지 나머지가 없이 나누어 떨어지면 소수 X
+3. 나누어 떨어지는 수가 없으면 소수 O
+
+### 실행 흐름
+
+1. “17”
+    1. getCombined(”17”, “”)
+    2. i=0
+        1. newFixed = “” + “1” = “1”
+        2. isPrime(1) = false
+        3. 재귀
+            1. getCombined(”7”, “1”)
+            2. newFixed = “1” + “7” = “17”
+            3. isPrime(17) = true
+            4. add(17)
+    3. i=1
+        1. newFixed = “” + “7” = “7”
+        2. isPrime(7) = true
+        3. add(7)
+        4. 재귀
+            1. getCombined(”1”, “7”)
+            2. newFixed = “7” + “1” = “71”
+            3. isPrime(71) = true
+            4. add(71)
