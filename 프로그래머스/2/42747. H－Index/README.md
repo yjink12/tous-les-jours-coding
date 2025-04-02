@@ -1,5 +1,8 @@
 # [level 2] H-Index - 42747 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42747) 
 
 ### 성능 요약
@@ -69,3 +72,67 @@
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+</div>
+</details>
+
+---
+
+### 2. 내 풀이
+```jsx
+function solution(citations) {
+    // 숫자 정렬
+    const sortedCitations = citations.sort((a, b) => b - a);
+    
+    let count = 0;
+    for (let i=0; i<sortedCitations.length; i++) {
+        if (sortedCitations[i] > i) count++;
+        else break;
+    }
+    
+    return count;
+}
+```
+
+**`H-Index`**
+
+- 피인용수가 논문수와 같아지거나
+    
+    피인용수가 논문수보다 작아지기시작하는 수
+    
+    |  **피인용수 sortedCitations[i]** | **논문수 i** |
+    | --- | --- |
+    | 6 | 0 |
+    | 5 | 1 |
+    | 3 | 2 |
+    | 1 | 3 |
+- H-index 에 대한 이해 필요했음
+
+---
+
+
+### 3. 다른 풀이
+```jsx
+function solution(citations) {
+  citations.sort((a, b) => b - a);
+
+  let i = 0;
+  while (i + 1 <= citations[i]) {
+    i++;
+  }
+
+  return i;
+}
+```
+
+1. 배열 내림차순으로 정렬
+2. i = 0 → 1 ≤ 6 ⇒ i = 1
+    
+    i = 1 → 2 ≤ 5 ⇒ i = 2
+    
+    i = 2 → 3 ≤ 3 ⇒ i = 3
+    
+    i = 3 → 4 ≤ 1 ⇒ break;
+    
+    return i = 3
+
+   
