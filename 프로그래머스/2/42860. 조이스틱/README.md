@@ -1,5 +1,8 @@
 # [level 2] 조이스틱 - 42860 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42860) 
 
 ### 성능 요약
@@ -68,3 +71,170 @@ ex) 완성해야 하는 이름이 세 글자면 AAA, 네 글자면 AAAA</p>
 
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+---
+
+### 2. 오답
+```jsx
+  function solution(name) {
+    let count = 0;
+
+    let baseStr = ['A'];
+    const alpha = [
+      'A',
+      'B',
+      'C',
+      'D',
+      'E',
+      'F',
+      'G',
+      'H',
+      'I',
+      'J',
+      'K',
+      'L',
+      'M',
+      'N',
+      'O',
+      'P',
+      'Q',
+      'R',
+      'S',
+      'T',
+      'U',
+      'V',
+      'W',
+      'X',
+      'Y',
+      'Z',
+    ];
+
+    for (let i = 1; i < name.length; i++) {
+      baseStr.push('A');
+    }
+
+    const moveRight = (idx) => {
+      for (let i = idx; i < name.length; i++) {
+        const index = alpha.indexOf(name[i]);
+        console.log('index', `${i} === ` + index);
+
+        // move up down
+        if (index > 13) {
+          const reverseIndex = index - 13;
+          count += reverseIndex;
+        } else {
+          count += index;
+        }
+
+        console.log('right count', count);
+
+        baseStr[i] = alpha[index];
+
+        if (name[i + 1] === 'A' || name[name.length - 1] === 'A') {
+          count++;
+          moveLeft(name.length - 1);
+        } else {
+          count++;
+        }
+      }
+    };
+
+    const moveLeft = (idx) => {
+      for (let i = idx; 0 <= i < name.length; i--) {
+        const index = alpha.indexOf(name[i]);
+        console.log('index', `${i} === ` + index);
+
+        // move up down
+        if (index > 13) {
+          const reverseIndex = index - 13;
+          count += reverseIndex;
+        } else {
+          count += index;
+        }
+
+        console.log('left count', count);
+
+        baseStr[i] = alpha[index];
+
+        if (name[i + 1] === 'A' || name[name.length - 1] === 'A') {
+          count++;
+          moveRight(i + 1);
+        } else {
+          count++;
+        }
+      }
+    };
+
+    moveRight(0);
+
+    console.log('baseStr', baseStr);
+    console.log('count', count);
+
+    return count;
+```
+
+1. name 길이 판단 → 배열에 A를 기본값으로 push
+2. 알파벳의 위치 판단해서 위치가
+    1. 13 이상인 경우 `위치 - 13` 으로 down 부터 시작
+    2. 13 미만인 경우 up 부터 시작
+3. 수평 이동을 어떤 식으로 구성해야하는지 ??? 해결법을 찾지 못함
+4. 진짜…. 너무 어렵다…..ㅠ
+
+---
+
+### 3. 다른 풀이
+```jsx
+function solution(name) {
+    let moves = 0;  // 상하 이동 횟수
+    let minSideMove = name.length - 1;  // 좌우 이동의 최소값 (초기값은 한 방향으로 쭉 이동하는 경우)
+    
+    for (let i = 0; i < name.length; i++) {
+        // 각 문자에 대해 위아래 중 최소 이동 횟수 계산
+        moves += Math.min(name[i].charCodeAt(0) - 65, 91 - name[i].charCodeAt(0));
+        
+        // 현재 위치 이후의 연속된 A의 끝 위치 찾기
+        let endA = i + 1;
+        while (endA < name.length && name[endA] === 'A') endA++;
+        
+        // 좌우 이동의 최소값 갱신
+        // 1. 현재까지 왔다가 돌아가는 경우
+        // 2. 끝까지 갔다가 돌아오는 경우
+        minSideMove = Math.min(minSideMove, i * 2 + (name.length - endA), (name.length - endA) * 2 + i);
+    }
+    
+    return moves + minSideMove;  // 총 이동 횟수 반환
+}
+```
+1. 상하 이동
+    1. ASCII 코드 A = 65 / Z = 90
+2. 연속된 A 탐색
+3. 좌우 이동
+    1. 경우의 수
+        1. 기존 최소값
+        2. 현재까지 왔다가 들어가는 경우
+            
+            **`i * 2 + (name.length - endA)`**
+            
+            - **i * 2**
+                - 시작점에서 i까지 갔다가 다시 시작점으로 돌아오는 이동 횟수
+            - **name.length - endA**
+                - endA 이후부터 끝까지 남은 글자 수만큼 이동
+            - 예시)  **JAN**
+                - 시작점(0) 에서 J 처리 (moves X)
+                - 다시 시작점으로 돌아감 (이미 시작점 → moves X)
+                - 끝(2) 에서부터 역순으로 이동 N 처리
+        3. 끝까지 갔다가 돌아오는 경우
+            
+            **`(name.length - endA) * 2 + i`**
+            
+            - **(name.length - endA) * 2**
+                - endA부터 끝까지 이동했다가 다시 돌아오는 이동 횟수
+            - **i**
+                - 시작점에서 현재 위치까지의 이동 횟수
+            - 예시)  **JAN**
+                - 시작점(0) 에서 J 처리 (moves X)
+                - J에서 끝까지 이동 (0 → 1 → 2)
+                - A (endA=2) 위치로 역순 이동 (2 → 1)
