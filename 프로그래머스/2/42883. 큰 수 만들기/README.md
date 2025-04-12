@@ -1,5 +1,8 @@
 # [level 2] 큰 수 만들기 - 42883 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+        
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42883) 
 
 ### 성능 요약
@@ -60,3 +63,41 @@
       </table>
 
 > 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+
+</div>
+</details>
+
+### 2. 내 문제풀이
+### 오답
+
+- 도저히 모르겠다!
+- 순회해서 큰 수 작은 수 판단하고 제거하고 하려다 보니 너무 복잡해져서 다른 사람 풀이 참고….
+- 어떻게 이렇게 간단하게 풀지...후
+
+```jsx
+function solution(number, k) {
+    let answer = '';
+    const stack = [];
+    
+    for (const num of number) {
+        while(k > 0 && stack.length > 0 && stack[stack.length -1] < num) {
+            stack.pop();
+            k--;
+        }
+        stack.push(num);
+    }
+    stack.splice(stack.length - k, k);
+    answer = stack.join("");
+    
+    return answer;
+} 
+```
+
+1. 문자열 number 순회
+2. k 가 0보다 크고 stack의 length 가 0보다 크고 현재 숫자보다 stack의 맨 위에 있는 값이 작으면
+    1. stack에서 맨 위 값을 제거
+    2. k 값 감소
+3. 현재 숫자를 stack 에 추가
+4. 반복문 이후에도 k가 0보다 크면 남은 k개의 숫자를 뒤에서부터 제거
+
+<img src="https://github.com/user-attachments/assets/336b2007-6b02-46fc-8f9e-09dc9edc7f08" width="80%">
