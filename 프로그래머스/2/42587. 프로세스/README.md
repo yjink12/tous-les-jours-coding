@@ -1,5 +1,8 @@
 # [level 2] 프로세스 - 42587 
-
+<details>
+<summary><h3>1. 문제</h3></summary>
+<div markdown="1">
+  
 [문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/42587) 
 
 ### 성능 요약
@@ -83,4 +86,78 @@
 <p>※ 공지 - 2023년 4월 21일 문제 지문이 리뉴얼되었습니다.</p>
 
 
-> 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges
+> 출처: 프로그래머스 코딩 테스트 연습, https://school.programmers.co.kr/learn/challenges\
+
+</div>
+</details>
+
+---
+
+### 2. 내 문제풀이
+```jsx
+function solution(priorities, location) {
+    let answer = 0;
+    let locationQueue = [];
+    let endLocation = [];
+    
+    for (let i=0; i<priorities.length; i++) {
+        locationQueue.push(i);
+    }
+    
+    while (priorities.length > 0) {
+        const sortPriorities = [...priorities].sort((a, b) => b - a);
+        if (priorities[0] < sortPriorities[0]) {
+            priorities.push(priorities[0]);
+            priorities.shift();
+            
+            locationQueue.push(locationQueue[0]);
+            locationQueue.shift();
+        } else {
+            endLocation.push(locationQueue[0]);
+            priorities.shift();
+            locationQueue.shift();
+        }
+    }
+    answer = endLocation.indexOf(location) + 1;
+    return answer;
+}
+```
+
+**개선필요**
+
+1. 매번 정렬을 수행 ⇒ 불필요함
+2. location 값이 나왔을 경우 바로 return 하면 불필요한 계산을 할 필요가 없다
+
+
+---
+
+
+### 3. 다른 풀이
+```jsx
+function solution(priorities, location) {
+    const list = priorities.map((data, index) => {
+       return {
+	      index: index,
+        num: data
+       }
+    });
+    
+    let count = 0;
+    
+    while(true){
+        const current = list.splice(0,1)[0];
+        
+        if(list.some(e => e.num > current.num)){
+            list.push(current);
+        }else{
+            count++;
+            if(current.index === location) return count;
+        }
+    }
+}
+```
+
+1. priorities 를 map 돌려서 index 값을 부여한다.
+2. while 을 돌려서 배열의 가장 첫번째 있는 값을 splice 로 잘라서 some 으로 그 값이 가장 큰 값인지를 체크한다
+    1. 크지 않으면 첫번째 있던 값을 맨 뒤로 보낸다
+    2. 크면 count 를 증가시키고 바로 count 값을 리턴한다.
